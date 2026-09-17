@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EduMind AI - Dashboard</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fb;
+            color: #172033;
+            min-height: 100vh;
+        }
+
+        /* =========================
+           NEIT BACKGROUND
+           ========================= */
+
+        body.neit-background {
+            background: #f5f7fb;
+            position: relative;
+        }
+
+        body.neit-background::before {
+            content: "";
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            height: calc(100vh - 70px);
+
+            background-image:
+                linear-gradient(
+                    rgba(255, 255, 255, 0.35),
+                    rgba(255, 255, 255, 0.35)
+                ),
+                url("{{ url_for('static', filename='images/neit-background.jpg') }}");
+
+            background-size: 100% 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        body.neit-background .navbar,
+        body.neit-background .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* =========================
+           NAVBAR
+           ========================= */
+
+        .navbar {
+            height: 72px;
+            background: rgba(255, 255, 255, 0.96);
+            border-bottom: 1px solid #e6eaf0;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 42px;
+
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+
+            background: linear-gradient(
+                135deg,
+                #2563eb,
+                #4f46e5
+            );
+
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        .logo-text {
+            font-size: 21px;
+            font-weight: 700;
+            color: #172033;
+        }
+
+        .logo-text span {
+            color: #2563eb;
+        }
+
+        .student-area {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .student-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+
+            background: #e8efff;
+            color: #2563eb;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .student-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        /* =========================
+           MAIN CONTAINER
+           ========================= */
+
+        .container {
+            max-width: 1180px;
+            margin: auto;
+            padding: 45px 25px 60px;
+        }
+
+        /* =========================
+           HERO
+           ========================= */
+
+        .hero {
+            min-height: 270px;
+            border-radius: 25px;
+
+            background: linear-gradient(
+                135deg,
+                #2563eb,
+                #4f46e5
+            );
+
+            color: white;
+            padding: 40px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            overflow: hidden;
+            position: relative;
+
+            box-shadow:
+                0 18px 45px rgba(37, 99, 235, 0.18);
+        }
+
+        .hero-content {
+            max-width: 650px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 7px 13px;
+
+            background: rgba(255, 255, 255, 0.16);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+
+            border-radius: 20px;
+
+            font-size: 12px;
+            margin-bottom: 17px;
+        }
+
+        .hero h1 {
+            font-size: 34px;
+            line-height: 1.2;
+            margin-bottom: 12px;
+        }
+
+        .hero p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.88);
+        }
+
+        .hero-image {
+            width: 260px;
+            max-height: 210px;
+            object-fit: contain;
+
+            position: relative;
+            z-index: 2;
+        }
+
+        .circle-one {
+            position: absolute;
+
+            width: 250px;
+            height: 250px;
+
+            border-radius: 50%;
+
+            background: rgba(255, 255, 255, 0.07);
+
+            right: -70px;
+            top: -80px;
+        }
+
+        .circle-two {
+            position: absolute;
+
+            width: 170px;
+            height: 170px;
+
+            border-radius: 50%;
+
+            background: rgba(255, 255, 255, 0.06);
+
+            right: 170px;
+            bottom: -90px;
+        }
+
+        /* =========================
+           SECTION
+           ========================= */
+
+        .section {
+            margin-top: 38px;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 18px;
+        }
+
+        .section-heading h2 {
+            font-size: 21px;
+            color: #172033;
+        }
+
+        .section-heading p {
+            font-size: 13px;
+            color: #7b8494;
+        }
+
+        /* =========================
+           ACADEMIC PROFILE
+           ========================= */
+
+        .academic-profile {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+
+            background: rgba(255, 255, 255, 0.96);
+
+            border: 1px solid #e8ebf1;
+            border-radius: 20px;
+
+            padding: 20px;
+
+            box-shadow:
+                0 10px 30px rgba(20, 40, 80, 0.04);
+        }
+
+        .profile-item {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+
+            padding: 15px;
+
+            background: #fafbff;
+
+            border: 1px solid #edf0f6;
+            border-radius: 14px;
+
+            min-width: 0;
+        }
+
+        .profile-icon {
+            width: 42px;
+            height: 42px;
+
+            border-radius: 11px;
+
+            background: #eef3ff;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 19px;
+
+            flex-shrink: 0;
+        }
+
+        .profile-label {
+            display: block;
+
+            font-size: 11px;
+
+            color: #8a93a3;
+
+            margin-bottom: 4px;
+        }
+
+        .profile-item strong {
+            display: block;
+
+            font-size: 13px;
+
+            color: #172033;
+
+            word-break: break-word;
+
+            line-height: 1.4;
+        }
+
+        /* =========================
+           LEARNING TOOLS
+           ========================= */
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .tool-card {
+            background: rgba(255, 255, 255, 0.96);
+
+            border: 1px solid #e8ebf1;
+            border-radius: 18px;
+
+            padding: 25px;
+
+            min-height: 190px;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                border-color 0.2s ease;
+
+            text-decoration: none;
+            color: inherit;
+
+            display: block;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+
+            box-shadow:
+                0 15px 30px rgba(20, 40, 80, 0.10);
+
+            border-color: #cdd9ff;
+        }
+
+        .tool-icon {
+            width: 52px;
+            height: 52px;
+
+            border-radius: 14px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 25px;
+
+            margin-bottom: 18px;
+        }
+
+        .blue-icon {
+            background: #e9f0ff;
+        }
+
+        .purple-icon {
+            background: #f0eaff;
+        }
+
+        .green-icon {
+            background: #e8f8ef;
+        }
+
+        .tool-card h3 {
+            font-size: 17px;
+            margin-bottom: 8px;
+            color: #172033;
+        }
+
+        .tool-card p {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #737c8c;
+        }
+
+        .arrow {
+            display: inline-block;
+
+            margin-top: 15px;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            color: #2563eb;
+        }
+
+        /* =========================
+           ASK AI
+           ========================= */
+
+        .ask-box {
+            background: rgba(255, 255, 255, 0.96);
+
+            border: 1px solid #e8ebf1;
+            border-radius: 20px;
+
+            padding: 25px;
+
+            box-shadow:
+                0 10px 30px rgba(20, 40, 80, 0.04);
+        }
+
+        .ask-box textarea {
+            width: 100%;
+
+            min-height: 100px;
+
+            border: 1px solid #dfe4ec;
+            border-radius: 13px;
+
+            padding: 15px;
+
+            resize: vertical;
+
+            outline: none;
+
+            font-family: inherit;
+            font-size: 14px;
+
+            color: #172033;
+
+            background: #fafbfc;
+        }
+
+        .ask-box textarea:focus {
+            border-color: #6d8cff;
+
+            background: white;
+
+            box-shadow:
+                0 0 0 3px rgba(37, 99, 235, 0.08);
+        }
+
+        .ask-bottom {
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            margin-top: 13px;
+        }
+
+        .ask-hint {
+            color: #8a93a3;
+            font-size: 12px;
+        }
+
+        .ask-button {
+            border: none;
+
+            background: #2563eb;
+            color: white;
+
+            padding: 11px 22px;
+
+            border-radius: 10px;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .ask-button:hover {
+            background: #1d4ed8;
+        }
+
+        /* =========================
+           ANSWER
+           ========================= */
+
+        #answerBox {
+            display: none;
+
+            margin-top: 18px;
+
+            background: #f7f9ff;
+
+            border: 1px solid #dce5ff;
+
+            border-radius: 14px;
+
+            padding: 20px;
+
+            line-height: 1.7;
+
+            font-size: 14px;
+        }
+
+        #answerBox strong {
+            color: #2563eb;
+        }
+
+        /* =========================
+           QUICK ACCESS
+           ========================= */
+
+        .quick-card {
+            background: rgba(255, 255, 255, 0.96);
+
+            border: 1px solid #e8ebf1;
+
+            border-radius: 18px;
+
+            padding: 22px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            text-decoration: none;
+
+            color: inherit;
+
+            transition: 0.2s;
+
+            max-width: 370px;
+        }
+
+        .quick-card:hover {
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 12px 28px rgba(20, 40, 80, 0.08);
+        }
+
+        .quick-left {
+            display: flex;
+
+            align-items: center;
+
+            gap: 15px;
+        }
+
+        .quick-icon {
+            width: 48px;
+            height: 48px;
+
+            border-radius: 13px;
+
+            background: #eef3ff;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 22px;
+        }
+
+        .quick-card h3 {
+            font-size: 15px;
+            margin-bottom: 5px;
+        }
+
+        .quick-card p {
+            font-size: 12px;
+            color: #7b8494;
+        }
+
+        .quick-arrow {
+            font-size: 20px;
+            color: #2563eb;
+        }
+
+        /* =========================
+           LAND BOT CHAT
+           ========================= */
+
+        .chat-button {
+            position: fixed;
+
+            right: 25px;
+            bottom: 25px;
+
+            width: 58px;
+            height: 58px;
+
+            border: none;
+
+            border-radius: 50%;
+
+            background: #2563eb;
+
+            color: white;
+
+            font-size: 25px;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 8px 25px rgba(37, 99, 235, 0.35);
+
+            z-index: 2000;
+
+            transition: 0.2s;
+        }
+
+        .chat-button:hover {
+            transform: scale(1.07);
+        }
+
+        .chat-window {
+            display: none;
+
+            position: fixed;
+
+            right: 25px;
+            bottom: 95px;
+
+            width: 370px;
+            height: 540px;
+
+            background: white;
+
+            border-radius: 18px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 20px 55px rgba(0, 0, 0, 0.20);
+
+            z-index: 1999;
+
+            border: 1px solid #e2e6ee;
+        }
+
+        .chat-header {
+            height: 55px;
+
+            background: #2563eb;
+
+            color: white;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 17px;
+        }
+
+        .chat-title {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .close-chat {
+            border: none;
+
+            background: transparent;
+
+            color: white;
+
+            font-size: 25px;
+
+            cursor: pointer;
+
+            line-height: 1;
+        }
+
+        .chat-frame {
+            width: 100%;
+            height: calc(100% - 55px);
+
+            border: none;
+        }
+
+        /* =========================
+           FOOTER
+           ========================= */
+
+        .footer {
+            text-align: center;
+
+            margin-top: 50px;
+
+            color: #8a93a3;
+
+            font-size: 12px;
+        }
+
+        /* =========================
+           TABLET
+           ========================= */
+
+        @media (max-width: 850px) {
+
+            .navbar {
+                padding: 0 20px;
+            }
+
+            .container {
+                padding: 30px 18px 50px;
+            }
+
+            .hero {
+                padding: 30px;
+                min-height: auto;
+            }
+
+            .hero h1 {
+                font-size: 27px;
+            }
+
+            .hero-image {
+                width: 190px;
+            }
+
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .academic-profile {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* =========================
+           MOBILE
+           ========================= */
+
+        @media (max-width: 600px) {
+
+            .navbar {
+                height: 65px;
+            }
+
+            .logo-text {
+                font-size: 18px;
+            }
+
+            .student-name {
+                display: none;
+            }
+
+            .hero {
+                padding: 25px;
+                display: block;
+            }
+
+            .hero-image {
+                width: 150px;
+
+                display: block;
+
+                margin: 20px auto 0;
+            }
+
+            .ask-bottom {
+                display: block;
+            }
+
+            .ask-button {
+                margin-top: 12px;
+                width: 100%;
+            }
+
+            .chat-window {
+                right: 10px;
+                bottom: 85px;
+
+                width: calc(100% - 20px);
+
+                height: 500px;
+            }
+
+            .chat-button {
+                right: 18px;
+                bottom: 18px;
+            }
+
+            .academic-profile {
+                padding: 14px;
+            }
+
+            .profile-item {
+                padding: 13px;
+            }
+        }
+
+    </style>
+</head>
+
+
+<body class="{% if is_neit %}neit-background{% endif %}">
+
+    <!-- =========================
+         NAVBAR
+         ========================= -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+
+            <div class="logo-icon">
+                E
+            </div>
+
+            <div class="logo-text">
+                Edu<span>Mind</span> AI
+            </div>
+
+        </div>
+
+
+        <div class="student-area">
+
+            <div class="student-avatar">
+                {{ student_name[0]|upper if student_name else "S" }}
+            </div>
+
+            <div class="student-name">
+                {{ student_name }}
+            </div>
+
+        </div>
+
+    </nav>
+
+
+    <!-- =========================
+         MAIN
+         ========================= -->
+
+    <main class="container">
+
+
+        <!-- HERO -->
+
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <div class="hero-badge">
+                    ✨ Smart Learning with AI
+                </div>
+
+                <h1>
+                    What do you want to learn today?
+                </h1>
+
+                <p>
+                    Ask questions, understand difficult concepts,
+                    practice with AI quizzes and learn in a simpler way
+                    with EduMind AI.
+                </p>
+
+            </div>
+
+
+            <img
+                class="hero-image"
+                src="{{ url_for('static', filename='images/ai-research-assistant.svg') }}"
+                alt="AI learning illustration"
+            >
+
+
+            <div class="circle-one"></div>
+
+            <div class="circle-two"></div>
+
+        </section>
+
+
+        <!-- =========================
+             ACADEMIC PROFILE
+             ========================= -->
+
+        <section class="section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h2>
+                        Your Academic Profile
+                    </h2>
+
+                    <p>
+                        Your selected learning information.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="academic-profile">
+
+
+                <div class="profile-item">
+
+                    <span class="profile-icon">
+                        🎓
+                    </span>
+
+                    <div>
+
+                        <span class="profile-label">
+                            Education
+                        </span>
+
+                        <strong>
+                            {{ profile.education or "Not selected" }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="profile-item">
+
+                    <span class="profile-icon">
+                        📚
+                    </span>
+
+                    <div>
+
+                        <span class="profile-label">
+                            Course
+                        </span>
+
+                        <strong>
+                            {{ profile.course or "Not selected" }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="profile-item">
+
+                    <span class="profile-icon">
+                        🏫
+                    </span>
+
+                    <div>
+
+                        <span class="profile-label">
+                            Institution
+                        </span>
+
+                        <strong>
+                            {{ profile.institution or "Not selected" }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="profile-item">
+
+                    <span class="profile-icon">
+                        📅
+                    </span>
+
+                    <div>
+
+                        <span class="profile-label">
+                            Year
+                        </span>
+
+                        <strong>
+                            {{ profile.year or "Not selected" }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="profile-item">
+
+                    <span class="profile-icon">
+                        📖
+                    </span>
+
+                    <div>
+
+                        <span class="profile-label">
+                            Semester
+                        </span>
+
+                        <strong>
+                            {{ profile.semester or "Not selected" }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="profile-item">
+
+                    <span class="profile-icon">
+                        💻
+                    </span>
+
+                    <div>
+
+                        <span class="profile-label">
+                            Branch
+                        </span>
+
+                        <strong>
+                            {{ profile.branch or "Not selected" }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             LEARNING TOOLS
+             ========================= -->
+
+        <section class="section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h2>
+                        Learning Tools
+                    </h2>
+
+                    <p>
+                        Choose a tool to improve your learning.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="tools-grid">
+
+
+                <!-- ASK DOUBT -->
+
+                <a
+                    href="{{ url_for('ask_doubt') }}"
+                    class="tool-card"
+                >
+
+                    <div class="tool-icon blue-icon">
+                        ❓
+                    </div>
+
+                    <h3>
+                        Ask a Doubt
+                    </h3>
+
+                    <p>
+                        Ask any academic question and get
+                        a clear AI-powered explanation.
+                    </p>
+
+                    <span class="arrow">
+                        Ask now →
+                    </span>
+
+                </a>
+
+
+                <!-- EASY EXPLANATION -->
+
+                <a
+                    href="{{ url_for('easy_explanation') }}"
+                    class="tool-card"
+                >
+
+                    <div class="tool-icon purple-icon">
+                        💡
+                    </div>
+
+                    <h3>
+                        Easy Explanation
+                    </h3>
+
+                    <p>
+                        Turn difficult topics into simple,
+                        understandable explanations.
+                    </p>
+
+                    <span class="arrow">
+                        Explain simply →
+                    </span>
+
+                </a>
+
+
+                <!-- AI QUIZ -->
+
+                <a
+                    href="{{ url_for('ai_quiz') }}"
+                    class="tool-card"
+                >
+
+                    <div class="tool-icon green-icon">
+                        🧠
+                    </div>
+
+                    <h3>
+                        AI Quiz
+                    </h3>
+
+                    <p>
+                        Test your knowledge with interactive
+                        AI-powered quizzes.
+                    </p>
+
+                    <span class="arrow">
+                        Start quiz →
+                    </span>
+
+                </a>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             ASK EDUMIND AI
+             ========================= -->
+
+        <section class="section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h2>
+                        Ask EduMind AI
+                    </h2>
+
+                    <p>
+                        Have a question? Ask it directly.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="ask-box">
+
+                <textarea
+                    id="question"
+                    placeholder="Example: Explain Newton's second law in simple words..."
+                ></textarea>
+
+
+                <div class="ask-bottom">
+
+                    <span class="ask-hint">
+                        💡 Tip: Ask your question clearly for a better explanation.
+                    </span>
+
+
+                    <button
+                        class="ask-button"
+                        onclick="askAI()"
+                    >
+                        Ask AI →
+                    </button>
+
+                </div>
+
+
+                <div id="answerBox"></div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             QUICK ACCESS
+             ========================= -->
+
+        <section class="section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h2>
+                        Quick Access
+                    </h2>
+
+                    <p>
+                        Track your learning journey.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <a
+                href="{{ url_for('learning_progress') }}"
+                class="quick-card"
+            >
+
+                <div class="quick-left">
+
+                    <div class="quick-icon">
+                        📊
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Learning Progress
+                        </h3>
+
+                        <p>
+                            View your quiz performance and progress.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="quick-arrow">
+                    →
+                </div>
+
+            </a>
+
+        </section>
+
+
+        <!-- FOOTER -->
+
+        <div class="footer">
+
+            EduMind AI • Smart Education & Digital Campus
+
+        </div>
+
+    </main>
+
+
+    <!-- =========================
+         LAND BOT
+         ========================= -->
+
+    <button
+        class="chat-button"
+        id="chatButton"
+        onclick="toggleChat()"
+        title="Chat with EduMind AI"
+    >
+        💬
+    </button>
+
+
+    <div
+        class="chat-window"
+        id="chatWindow"
+    >
+
+        <div class="chat-header">
+
+            <div class="chat-title">
+                🤖 EduMind AI
+            </div>
+
+            <button
+                class="close-chat"
+                onclick="toggleChat()"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <iframe
+            class="chat-frame"
+            src=https://landbot.online/v3/H-3513701-2YSOO865APQ7SBTT/index.html
+            title="EduMind AI Assistant"
+        ></iframe>
+
+    </div>
+
+
+    <!-- =========================
+         JAVASCRIPT
+         ========================= -->
+
+    <script>
+
+        async function askAI() {
+
+            const questionBox =
+                document.getElementById("question");
+
+            const answerBox =
+                document.getElementById("answerBox");
+
+            const question =
+                questionBox.value.trim();
+
+
+            if (!question) {
+
+                answerBox.style.display = "block";
+
+                answerBox.innerHTML =
+                    "⚠️ Please enter a question first.";
+
+                return;
+            }
+
+
+            answerBox.style.display = "block";
+
+            answerBox.innerHTML =
+                "🤖 EduMind AI is thinking...";
+
+
+            try {
+
+                const response =
+                    await fetch("/ask", {
+
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            question: question
+                        })
+
+                    });
+
+
+                const data =
+                    await response.json();
+
+
+                if (data.success) {
+
+                    answerBox.innerHTML =
+                        formatAnswer(data.answer);
+
+                } else {
+
+                    answerBox.innerHTML =
+                        "⚠️ " +
+                        (
+                            data.error ||
+                            "Unable to get an answer."
+                        );
+
+                }
+
+
+            } catch (error) {
+
+                answerBox.innerHTML =
+                    "⚠️ Something went wrong. Please try again.";
+
+                console.error(error);
+
+            }
+
+        }
+
+
+        function formatAnswer(text) {
+
+            if (!text) {
+                return "No answer received.";
+            }
+
+            return text
+                .replace(
+                    /\*\*(.*?)\*\*/g,
+                    "<strong>$1</strong>"
+                )
+                .replace(
+                    /\n/g,
+                    "<br>"
+                );
+
+        }
+
+
+        function toggleChat() {
+
+            const chat =
+                document.getElementById("chatWindow");
+
+            const button =
+                document.getElementById("chatButton");
+
+
+            if (chat.style.display === "block") {
+
+                chat.style.display = "none";
+
+                button.innerText = "💬";
+
+            } else {
+
+                chat.style.display = "block";
+
+                button.innerText = "×";
+
+            }
+
+        }
+
+    </script>
+
+</body>
+</html>

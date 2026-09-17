@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Easy Explanation | EduMind AI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+            color: #172033;
+        }
+
+        .navbar {
+            height: 70px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 7%;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+
+        .logo {
+            font-size: 23px;
+            font-weight: 700;
+            color: #1769e0;
+        }
+
+        .student {
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 55px auto;
+            padding: 0 20px;
+        }
+
+        .back {
+            color: #1769e0;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #687386;
+            margin-bottom: 35px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.07);
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid #dce2eb;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #1769e0;
+        }
+
+        button {
+            margin-top: 18px;
+            background: #1769e0;
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0f55bd;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .answer {
+            display: none;
+            margin-top: 25px;
+            padding: 22px;
+            background: #f1f6ff;
+            border-left: 5px solid #1769e0;
+            border-radius: 12px;
+            white-space: pre-wrap;
+            line-height: 1.7;
+        }
+
+        .options {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+            flex-wrap: wrap;
+        }
+
+        .option {
+            background: #f1f4f9;
+            color: #172033;
+            border: 1px solid #dce2eb;
+            margin-top: 0;
+        }
+
+        .option.active {
+            background: #e6efff;
+            border-color: #1769e0;
+            color: #1769e0;
+        }
+
+        .tip {
+            margin-top: 18px;
+            color: #687386;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">
+        EduMind AI
+    </div>
+
+    <div class="student">
+        👤 {{ student_name }}
+    </div>
+
+</nav>
+
+
+<div class="container">
+
+    <a href="{{ url_for('dashboard') }}" class="back">
+        ← Back to Dashboard
+    </a>
+
+    <h1>💡 Easy Explanation</h1>
+
+    <p class="subtitle">
+        Enter any topic and EduMind AI will explain it in a simple,
+        student-friendly way.
+    </p>
+
+
+    <div class="card">
+
+        <label for="topic">
+            What topic do you want to understand?
+        </label>
+
+        <input
+            type="text"
+            id="topic"
+            placeholder="Example: Photosynthesis"
+        >
+
+
+        <div class="options">
+
+            <button
+                class="option active"
+                onclick="selectLevel(this, 'simple')">
+                🟢 Simple
+            </button>
+
+            <button
+                class="option"
+                onclick="selectLevel(this, 'example')">
+                💡 With Example
+            </button>
+
+            <button
+                class="option"
+                onclick="selectLevel(this, 'memory')">
+                🧠 With Memory Trick
+            </button>
+
+        </div>
+
+
+        <button id="explainButton" onclick="explainTopic()">
+            Explain Topic →
+        </button>
+
+
+        <div id="answer" class="answer"></div>
+
+
+        <div class="tip">
+            💡 Tip: Try subjects like Physics, Mathematics,
+            Programming, Biology or Engineering concepts.
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+let explanationMode = "simple";
+
+
+function selectLevel(button, mode) {
+
+    explanationMode = mode;
+
+    document.querySelectorAll(".option").forEach(btn => {
+        btn.classList.remove("active");
+    });
+
+    button.classList.add("active");
+}
+
+
+async function explainTopic() {
+
+    const topicBox = document.getElementById("topic");
+    const answerBox = document.getElementById("answer");
+    const button = document.getElementById("explainButton");
+
+    const topic = topicBox.value.trim();
+
+
+    if (!topic) {
+
+        alert("Please enter a topic first.");
+
+        return;
+    }
+
+
+    answerBox.style.display = "block";
+
+    answerBox.innerText =
+        "🤖 EduMind AI is preparing a simple explanation...";
+
+
+    button.disabled = true;
+
+    button.innerText = "Explaining...";
+
+
+    let instruction = "";
+
+
+    if (explanationMode === "simple") {
+
+        instruction =
+            "Explain the topic using very simple language suitable for a student.";
+
+    }
+
+    else if (explanationMode === "example") {
+
+        instruction =
+            "Explain the topic simply and include a clear real-life example.";
+
+    }
+
+    else if (explanationMode === "memory") {
+
+        instruction =
+            "Explain the topic simply and include an easy memory trick.";
+
+    }
+
+
+    const question = `
+Explain this educational topic:
+
+${topic}
+
+${instruction}
+
+Use:
+- A short definition
+- Simple explanation
+- Important points
+- Example when useful
+- Easy language
+
+Do not make the explanation unnecessarily complicated.
+`;
+
+
+    try {
+
+        const response = await fetch("/ask", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                question: question
+            })
+
+        });
+
+
+        const data = await response.json();
+
+
+        if (data.success) {
+
+            answerBox.innerText = data.answer;
+
+        }
+
+        else {
+
+            answerBox.innerText =
+                "Sorry, I couldn't explain this topic right now.\n\n" +
+                data.error;
+
+        }
+
+    }
+
+    catch (error) {
+
+        answerBox.innerText =
+            "Something went wrong.\n\n" +
+            "Please make sure the Flask server is running.";
+
+    }
+
+
+    button.disabled = false;
+
+    button.innerText =
+        "Explain Topic →";
+}
+
+</script>
+
+</body>
+</html>

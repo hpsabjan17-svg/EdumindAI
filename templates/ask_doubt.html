@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ask a Doubt | EduMind AI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+            color: #172033;
+        }
+
+        .navbar {
+            height: 70px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 7%;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+
+        .logo {
+            font-size: 23px;
+            font-weight: 700;
+            color: #1769e0;
+        }
+
+        .student {
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 55px auto;
+            padding: 0 20px;
+        }
+
+        .back {
+            color: #1769e0;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #687386;
+            margin-bottom: 35px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.07);
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 170px;
+            padding: 18px;
+            border: 1px solid #dce2eb;
+            border-radius: 12px;
+            font-size: 16px;
+            resize: vertical;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: #1769e0;
+        }
+
+        button {
+            margin-top: 18px;
+            background: #1769e0;
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0f55bd;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .answer {
+            display: none;
+            margin-top: 25px;
+            padding: 22px;
+            background: #f1f6ff;
+            border-left: 5px solid #1769e0;
+            border-radius: 12px;
+            white-space: pre-wrap;
+            line-height: 1.7;
+        }
+
+        .tip {
+            margin-top: 18px;
+            color: #687386;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="logo">EduMind AI</div>
+
+    <div class="student">
+        👤 {{ student_name }}
+    </div>
+</nav>
+
+<div class="container">
+
+    <a href="{{ url_for('dashboard') }}" class="back">
+        ← Back to Dashboard
+    </a>
+
+    <h1>📚 Ask a Doubt</h1>
+
+    <p class="subtitle">
+        Ask anything you're learning. EduMind AI will explain it clearly.
+    </p>
+
+    <div class="card">
+
+        <textarea
+            id="question"
+            placeholder="Example: Explain Newton's second law in simple words..."
+        ></textarea>
+
+        <button id="askButton" onclick="askAI()">
+            Ask EduMind AI →
+        </button>
+
+        <div id="answer" class="answer"></div>
+
+        <div class="tip">
+            💡 Tip: You can ask for examples, step-by-step solutions,
+            simple explanations or memory tricks.
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+async function askAI() {
+
+    const questionBox = document.getElementById("question");
+    const answerBox = document.getElementById("answer");
+    const button = document.getElementById("askButton");
+
+    const question = questionBox.value.trim();
+
+    if (!question) {
+        alert("Please enter your question first.");
+        return;
+    }
+
+    answerBox.style.display = "block";
+    answerBox.innerHTML =
+        "🤖 EduMind AI is thinking...";
+
+    button.disabled = true;
+    button.innerText = "Thinking...";
+
+    try {
+
+        const response = await fetch("/ask", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                question: question
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+
+            answerBox.innerText = data.answer;
+
+        } else {
+
+            answerBox.innerText =
+                "Sorry, I couldn't answer that right now.\n\n" +
+                data.error;
+
+        }
+
+    } catch (error) {
+
+        answerBox.innerText =
+            "Something went wrong.\n\n" +
+            "Please make sure the Flask server is running.";
+
+    }
+
+    button.disabled = false;
+    button.innerText = "Ask EduMind AI →";
+}
+
+</script>
+
+</body>
+</html>

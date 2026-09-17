@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Quiz | EduMind AI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+            color: #172033;
+        }
+
+        .navbar {
+            height: 70px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 7%;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+
+        .logo {
+            font-size: 23px;
+            font-weight: 700;
+            color: #1769e0;
+        }
+
+        .student {
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 45px auto;
+            padding: 0 20px;
+        }
+
+        .back {
+            color: #1769e0;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #687386;
+            margin-bottom: 30px;
+        }
+
+        .setup-card,
+        .quiz-card,
+        .result-card {
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.07);
+        }
+
+        .quiz-card,
+        .result-card {
+            display: none;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #dce2eb;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+            margin-bottom: 20px;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #1769e0;
+        }
+
+        button {
+            background: #1769e0;
+            color: white;
+            border: none;
+            padding: 14px 23px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0f55bd;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .progress {
+            color: #687386;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .question {
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        .answers {
+            display: grid;
+            gap: 12px;
+        }
+
+        .answer-btn {
+            width: 100%;
+            text-align: left;
+            background: #f7f9fc;
+            color: #172033;
+            border: 1px solid #dce2eb;
+            padding: 16px;
+        }
+
+        .answer-btn:hover {
+            background: #eef4ff;
+            border-color: #1769e0;
+        }
+
+        .answer-btn.correct {
+            background: #eef8f1;
+            border-color: #27ae60;
+            color: #176b3a;
+        }
+
+        .answer-btn.wrong {
+            background: #fff1f0;
+            border-color: #e74c3c;
+            color: #a93226;
+        }
+
+        .result-score {
+            font-size: 48px;
+            font-weight: 800;
+            color: #1769e0;
+            margin: 10px 0;
+        }
+
+        .result-message {
+            color: #687386;
+            font-size: 17px;
+            margin-bottom: 25px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #687386;
+        }
+
+        .error {
+            margin-top: 15px;
+            color: #c0392b;
+        }
+
+        .secondary-button {
+            display: inline-block;
+            margin-left: 8px;
+            background: #eef3fb;
+            color: #1769e0;
+            text-decoration: none;
+            padding: 13px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .secondary-button:hover {
+            background: #e2ebfa;
+        }
+
+        /* ANSWER REVIEW */
+
+        .review-section {
+            margin-top: 35px;
+            border-top: 1px solid #e5e9f0;
+            padding-top: 25px;
+        }
+
+        .review-title {
+            font-size: 23px;
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+
+        .review-card {
+            border: 1px solid #e2e6ee;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            background: #fafbfe;
+        }
+
+        .review-card.correct-review {
+            border-left: 5px solid #27ae60;
+        }
+
+        .review-card.wrong-review {
+            border-left: 5px solid #e74c3c;
+        }
+
+        .review-question {
+            font-size: 17px;
+            font-weight: 700;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .review-row {
+            margin: 8px 0;
+            line-height: 1.5;
+        }
+
+        .your-answer {
+            color: #c0392b;
+        }
+
+        .your-answer.correct-text {
+            color: #218838;
+        }
+
+        .correct-answer {
+            color: #218838;
+            font-weight: 600;
+        }
+
+        .explanation {
+            margin-top: 14px;
+            padding: 13px 15px;
+            background: #f0f5ff;
+            border-radius: 10px;
+            color: #43516a;
+            line-height: 1.6;
+        }
+
+        .review-status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .status-correct {
+            background: #e8f7ee;
+            color: #218838;
+        }
+
+        .status-wrong {
+            background: #fdecea;
+            color: #c0392b;
+        }
+
+        .review-summary {
+            background: #f7f9fc;
+            border: 1px solid #e2e6ee;
+            border-radius: 14px;
+            padding: 17px;
+            margin-bottom: 20px;
+            color: #4d586b;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+
+            .navbar {
+                padding: 0 5%;
+            }
+
+            h1 {
+                font-size: 30px;
+            }
+
+            .secondary-button {
+                margin-left: 0;
+                margin-top: 10px;
+            }
+
+            .setup-card,
+            .quiz-card,
+            .result-card {
+                padding: 22px;
+            }
+
+            .question {
+                font-size: 19px;
+            }
+
+            .review-card {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+
+        <div class="logo">
+            EduMind AI
+        </div>
+
+        <div class="student">
+            👤 {{ student_name }}
+        </div>
+
+    </nav>
+
+
+    <div class="container">
+
+        <a href="{{ url_for('dashboard') }}" class="back">
+            ← Back to Dashboard
+        </a>
+
+
+        <h1>🧠 AI Quiz</h1>
+
+        <p class="subtitle">
+            Test your knowledge with an AI-generated quiz.
+        </p>
+
+
+        <!-- QUIZ SETUP -->
+
+        <div class="setup-card" id="setupCard">
+
+            <label for="topic">
+                What topic do you want to practice?
+            </label>
+
+            <input
+                type="text"
+                id="topic"
+                placeholder="Example: Newton's Laws"
+            >
+
+
+            <label for="difficulty">
+                Difficulty
+            </label>
+
+            <select id="difficulty">
+
+                <option value="Easy">
+                    Easy
+                </option>
+
+                <option value="Medium" selected>
+                    Medium
+                </option>
+
+                <option value="Hard">
+                    Hard
+                </option>
+
+            </select>
+
+
+            <button id="startButton" onclick="startQuiz()">
+                Generate Quiz →
+            </button>
+
+            <div id="setupMessage"></div>
+
+        </div>
+
+
+        <!-- QUIZ -->
+
+        <div class="quiz-card" id="quizCard">
+
+            <div class="progress" id="progress">
+                Question 1 of 5
+            </div>
+
+            <div class="question" id="question">
+            </div>
+
+            <div class="answers" id="answers">
+            </div>
+
+        </div>
+
+
+        <!-- RESULT -->
+
+        <div class="result-card" id="resultCard">
+
+            <div style="font-size: 20px; font-weight: 700;">
+                🎉 Quiz Completed!
+            </div>
+
+            <div class="result-score" id="score">
+                0/0
+            </div>
+
+            <div class="result-message" id="resultMessage">
+            </div>
+
+
+            <!-- ANSWER REVIEW -->
+
+            <div class="review-section">
+
+                <div class="review-title">
+                    📋 Review Your Answers
+                </div>
+
+                <div class="review-summary" id="reviewSummary">
+                </div>
+
+                <div id="reviewContainer">
+                </div>
+
+            </div>
+
+
+            <button onclick="location.reload()">
+                Try Another Quiz
+            </button>
+
+            <a
+                href="{{ url_for('learning_progress') }}"
+                class="secondary-button">
+                View Progress →
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        let quizQuestions = [];
+
+        let currentQuestion = 0;
+
+        let correctAnswers = 0;
+
+        /*
+         * Stores every answer selected by the student.
+         *
+         * Example:
+         *
+         * userAnswers[0] = "Option B"
+         * userAnswers[1] = "Option C"
+         */
+        let userAnswers = [];
+
+
+        // =====================================================
+        // START QUIZ
+        // =====================================================
+
+        async function startQuiz() {
+
+            const topic =
+                document.getElementById("topic").value.trim();
+
+            const difficulty =
+                document.getElementById("difficulty").value;
+
+            const button =
+                document.getElementById("startButton");
+
+            const message =
+                document.getElementById("setupMessage");
+
+
+            if (!topic) {
+
+                alert("Please enter a topic first.");
+
+                return;
+            }
+
+
+            button.disabled = true;
+
+            button.innerText = "Generating...";
+
+
+            message.innerHTML =
+                '<div class="loading">' +
+                '🤖 EduMind AI is creating your quiz...' +
+                '</div>';
+
+
+            const prompt = `
+Create a ${difficulty} level educational quiz about:
+
+${topic}
+
+Create exactly 5 multiple-choice questions.
+
+For every question provide:
+1. The question
+2. Four answer options
+3. The correct answer
+4. A short explanation of why the correct answer is correct
+
+IMPORTANT:
+Return ONLY valid JSON.
+
+Use exactly this format:
+
+[
+  {
+    "question": "Question text",
+    "options": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "answer": "Option A",
+    "explanation": "Short explanation of the correct answer."
+  }
+]
+
+Rules:
+- There must be exactly 5 questions.
+- Every question must have exactly 4 options.
+- The answer must exactly match one of the options.
+- The explanation must clearly explain the correct answer.
+- Do not use Markdown.
+- Do not put JSON inside code fences.
+- Return only the JSON array.
+`;
+
+
+            try {
+
+                const response = await fetch("/ask", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        question: prompt
+                    })
+
+                });
+
+
+                const data = await response.json();
+
+
+                if (!data.success) {
+
+                    throw new Error(data.error);
+
+                }
+
+
+                let cleaned =
+                    data.answer.trim();
+
+
+                // Remove markdown code fences if AI adds them
+
+                cleaned = cleaned
+                    .replace(/```json/gi, "")
+                    .replace(/```/g, "")
+                    .trim();
+
+
+                /*
+                 * Sometimes an AI response may contain
+                 * extra text before or after the JSON.
+                 *
+                 * Try to extract only the JSON array.
+                 */
+
+                const firstBracket =
+                    cleaned.indexOf("[");
+
+                const lastBracket =
+                    cleaned.lastIndexOf("]");
+
+
+                if (
+                    firstBracket !== -1 &&
+                    lastBracket !== -1 &&
+                    lastBracket > firstBracket
+                ) {
+
+                    cleaned =
+                        cleaned.substring(
+                            firstBracket,
+                            lastBracket + 1
+                        );
+
+                }
+
+
+                quizQuestions =
+                    JSON.parse(cleaned);
+
+
+                if (
+                    !Array.isArray(quizQuestions) ||
+                    quizQuestions.length === 0
+                ) {
+
+                    throw new Error(
+                        "Invalid quiz format."
+                    );
+
+                }
+
+
+                /*
+                 * Validate every question before starting.
+                 */
+
+                quizQuestions.forEach(function(question) {
+
+                    if (
+                        !question.question ||
+                        !Array.isArray(question.options) ||
+                        question.options.length !== 4 ||
+                        !question.answer
+                    ) {
+
+                        throw new Error(
+                            "Invalid question format."
+                        );
+
+                    }
+
+                    /*
+                     * If explanation is missing,
+                     * create a safe fallback.
+                     */
+
+                    if (!question.explanation) {
+
+                        question.explanation =
+                            "This is the correct answer based on the topic.";
+
+                    }
+
+                });
+
+
+                currentQuestion = 0;
+
+                correctAnswers = 0;
+
+                userAnswers = [];
+
+
+                document.getElementById("setupCard")
+                    .style.display = "none";
+
+
+                document.getElementById("quizCard")
+                    .style.display = "block";
+
+
+                message.innerHTML = "";
+
+
+                showQuestion();
+
+            }
+
+            catch (error) {
+
+                console.error(error);
+
+                message.innerHTML =
+                    '<div class="error">' +
+                    'Unable to generate the quiz. ' +
+                    'Please try again.' +
+                    '</div>';
+
+            }
+
+
+            button.disabled = false;
+
+            button.innerText =
+                "Generate Quiz →";
+
+        }
+
+
+        // =====================================================
+        // SHOW QUESTION
+        // =====================================================
+
+        function showQuestion() {
+
+            const question =
+                quizQuestions[currentQuestion];
+
+
+            document.getElementById("progress")
+                .innerText =
+                "Question " +
+                (currentQuestion + 1) +
+                " of " +
+                quizQuestions.length;
+
+
+            document.getElementById("question")
+                .innerText =
+                question.question;
+
+
+            const answers =
+                document.getElementById("answers");
+
+
+            answers.innerHTML = "";
+
+
+            question.options.forEach(function(option) {
+
+                const button =
+                    document.createElement("button");
+
+
+                button.className =
+                    "answer-btn";
+
+
+                button.innerText =
+                    option;
+
+
+                button.onclick =
+                    function() {
+
+                        selectAnswer(option);
+
+                    };
+
+
+                answers.appendChild(button);
+
+            });
+
+        }
+
+
+        // =====================================================
+        // SELECT ANSWER
+        // =====================================================
+
+        function selectAnswer(selected) {
+
+            const question =
+                quizQuestions[currentQuestion];
+
+
+            const buttons =
+                document.querySelectorAll(
+                    ".answer-btn"
+                );
+
+
+            /*
+             * SAVE THE STUDENT'S ANSWER
+             */
+
+            userAnswers[currentQuestion] =
+                selected;
+
+
+            buttons.forEach(function(button) {
+
+                button.disabled = true;
+
+
+                /*
+                 * Show the correct answer immediately
+                 * for a short moment.
+                 */
+
+                if (
+                    button.innerText ===
+                    question.answer
+                ) {
+
+                    button.classList.add("correct");
+
+                }
+
+
+                /*
+                 * Show the selected wrong answer.
+                 */
+
+                if (
+                    button.innerText === selected &&
+                    selected !== question.answer
+                ) {
+
+                    button.classList.add("wrong");
+
+                }
+
+            });
+
+
+            /*
+             * Check answer.
+             */
+
+            if (
+                selected ===
+                question.answer
+            ) {
+
+                correctAnswers++;
+
+            }
+
+
+            /*
+             * Move to the next question.
+             */
+
+            setTimeout(function() {
+
+                currentQuestion++;
+
+
+                if (
+                    currentQuestion <
+                    quizQuestions.length
+                ) {
+
+                    showQuestion();
+
+                }
+
+                else {
+
+                    finishQuiz();
+
+                }
+
+            }, 700);
+
+        }
+
+
+        // =====================================================
+        // FINISH QUIZ
+        // =====================================================
+
+        async function finishQuiz() {
+
+            document.getElementById("quizCard")
+                .style.display = "none";
+
+
+            document.getElementById("resultCard")
+                .style.display = "block";
+
+
+            const total =
+                quizQuestions.length;
+
+
+            const percentage =
+                Math.round(
+                    (correctAnswers / total) * 100
+                );
+
+
+            /*
+             * SHOW SCORE
+             */
+
+            document.getElementById("score")
+                .innerText =
+                correctAnswers +
+                "/" +
+                total;
+
+
+            let message;
+
+
+            if (percentage >= 80) {
+
+                message =
+                    "Excellent work! 🎉 " +
+                    "You have a strong understanding " +
+                    "of this topic.";
+
+            }
+
+            else if (percentage >= 60) {
+
+                message =
+                    "Good job! 👍 Keep practicing " +
+                    "to improve your score.";
+
+            }
+
+            else {
+
+                message =
+                    "Keep learning! 💪 Review the " +
+                    "topic and try the quiz again.";
+
+            }
+
+
+            document.getElementById("resultMessage")
+                .innerText =
+                message;
+
+
+            /*
+             * SHOW ANSWER REVIEW
+             */
+
+            showAnswerReview();
+
+
+            /*
+             * SAVE RESULT
+             */
+
+            try {
+
+                await fetch("/quiz-result", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        correct:
+                            correctAnswers,
+
+                        total:
+                            total
+
+                    })
+
+                });
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Could not save quiz result:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        // =====================================================
+        // SHOW ANSWER REVIEW
+        // =====================================================
+
+        function showAnswerReview() {
+
+            const container =
+                document.getElementById(
+                    "reviewContainer"
+                );
+
+
+            const summary =
+                document.getElementById(
+                    "reviewSummary"
+                );
+
+
+            container.innerHTML = "";
+
+
+            let wrongCount =
+                quizQuestions.length -
+                correctAnswers;
+
+
+            summary.innerHTML =
+                "<strong>" +
+                correctAnswers +
+                "</strong> correct · " +
+                "<strong>" +
+                wrongCount +
+                "</strong> wrong<br>" +
+                "Review the answers below to understand " +
+                "your mistakes and revise the topic.";
+
+
+            quizQuestions.forEach(
+                function(question, index) {
+
+                    const selected =
+                        userAnswers[index];
+
+
+                    const isCorrect =
+                        selected ===
+                        question.answer;
+
+
+                    const reviewCard =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    reviewCard.className =
+                        "review-card " +
+                        (
+                            isCorrect
+                                ? "correct-review"
+                                : "wrong-review"
+                        );
+
+
+                    /*
+                     * STATUS
+                     */
+
+                    const status =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    status.className =
+                        "review-status " +
+                        (
+                            isCorrect
+                                ? "status-correct"
+                                : "status-wrong"
+                        );
+
+
+                    status.innerText =
+                        isCorrect
+                            ? "✓ Correct"
+                            : "✗ Wrong";
+
+
+                    reviewCard.appendChild(
+                        status
+                    );
+
+
+                    /*
+                     * QUESTION
+                     */
+
+                    const questionText =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    questionText.className =
+                        "review-question";
+
+
+                    questionText.innerText =
+                        "Question " +
+                        (index + 1) +
+                        ": " +
+                        question.question;
+
+
+                    reviewCard.appendChild(
+                        questionText
+                    );
+
+
+                    /*
+                     * YOUR ANSWER
+                     */
+
+                    const yourAnswer =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    yourAnswer.className =
+                        "review-row " +
+                        (
+                            isCorrect
+                                ? "your-answer correct-text"
+                                : "your-answer"
+                        );
+
+
+                    yourAnswer.innerHTML =
+                        "<strong>" +
+                        (
+                            isCorrect
+                                ? "Your answer:"
+                                : "Your answer:"
+                        ) +
+                        "</strong> ";
+
+
+                    const yourAnswerText =
+                        document.createElement(
+                            "span"
+                        );
+
+
+                    yourAnswerText.innerText =
+                        selected ||
+                        "No answer selected";
+
+
+                    yourAnswer.appendChild(
+                        yourAnswerText
+                    );
+
+
+                    reviewCard.appendChild(
+                        yourAnswer
+                    );
+
+
+                    /*
+                     * CORRECT ANSWER
+                     */
+
+                    const correctAnswer =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    correctAnswer.className =
+                        "review-row correct-answer";
+
+
+                    correctAnswer.innerHTML =
+                        "<strong>" +
+                        "Correct answer:" +
+                        "</strong> ";
+
+
+                    const correctAnswerText =
+                        document.createElement(
+                            "span"
+                        );
+
+
+                    correctAnswerText.innerText =
+                        question.answer;
+
+
+                    correctAnswer.appendChild(
+                        correctAnswerText
+                    );
+
+
+                    reviewCard.appendChild(
+                        correctAnswer
+                    );
+
+
+                    /*
+                     * EXPLANATION
+                     */
+
+                    const explanation =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    explanation.className =
+                        "explanation";
+
+
+                    explanation.innerHTML =
+                        "<strong>📖 Explanation:</strong> ";
+
+
+                    const explanationText =
+                        document.createElement(
+                            "span"
+                        );
+
+
+                    explanationText.innerText =
+                        question.explanation ||
+                        "This is the correct answer based on the topic.";
+
+
+                    explanation.appendChild(
+                        explanationText
+                    );
+
+
+                    reviewCard.appendChild(
+                        explanation
+                    );
+
+
+                    container.appendChild(
+                        reviewCard
+                    );
+
+                }
+            );
+
+        }
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EduMind AI | Academic Profile</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f7fb;
+            color: #172033;
+        }
+
+        .navbar {
+            height: 70px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 7%;
+            border-bottom: 1px solid #e8ebf2;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2563eb;
+        }
+
+        .logo span {
+            color: #111827;
+        }
+
+        .container {
+            width: 86%;
+            max-width: 1000px;
+            margin: 45px auto;
+        }
+
+        .heading {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .heading h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .heading p {
+            color: #6b7280;
+        }
+
+        .education-options {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .education-card {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 25px 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .education-card:hover {
+            border-color: #2563eb;
+            transform: translateY(-3px);
+        }
+
+        .education-card.active {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .education-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+
+        .education-card h3 {
+            margin-bottom: 6px;
+        }
+
+        .education-card p {
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        .details {
+            display: none;
+            background: white;
+            border-radius: 18px;
+            padding: 30px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+        }
+
+        .details.show {
+            display: block;
+        }
+
+        .details h2 {
+            margin-bottom: 22px;
+            font-size: 22px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #d6dbe5;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            background: white;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #2563eb;
+        }
+
+        .continue-btn {
+            width: 100%;
+            margin-top: 28px;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .continue-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .continue-btn:disabled {
+            background: #93aef5;
+            cursor: not-allowed;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .note {
+            margin-top: 12px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 9px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        @media (max-width: 800px) {
+            .education-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: auto;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .education-options {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                width: 92%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="navbar">
+
+    <div class="logo">
+        Edu<span>Mind</span> AI
+    </div>
+
+    <div>
+        <strong>Academic Profile</strong>
+    </div>
+
+</div>
+
+
+<div class="container">
+
+    <div class="heading">
+
+        <h1>
+            Tell us about your education 🎓
+        </h1>
+
+        <p>
+            Select your education level so EduMind AI can personalize your learning.
+        </p>
+
+    </div>
+
+
+    <!-- EDUCATION LEVEL -->
+
+    <div class="education-options">
+
+        <div
+            class="education-card"
+            onclick="selectEducation(this, 'school')"
+        >
+            <div class="education-icon">🏫</div>
+            <h3>School</h3>
+            <p>Class 1 – 12</p>
+        </div>
+
+
+        <div
+            class="education-card"
+            onclick="selectEducation(this, 'degree')"
+        >
+            <div class="education-icon">🎓</div>
+            <h3>Degree</h3>
+            <p>UG Programs</p>
+        </div>
+
+
+        <div
+            class="education-card"
+            onclick="selectEducation(this, 'engineering')"
+        >
+            <div class="education-icon">⚙️</div>
+            <h3>Engineering</h3>
+            <p>B.E / B.Tech</p>
+        </div>
+
+
+        <div
+            class="education-card"
+            onclick="selectEducation(this, 'mba')"
+        >
+            <div class="education-icon">💼</div>
+            <h3>MBA</h3>
+            <p>Management</p>
+        </div>
+
+    </div>
+
+
+    <!-- DETAILS -->
+
+    <div class="details" id="details">
+
+        <h2 id="detailsTitle">
+            Academic Details
+        </h2>
+
+
+        <div class="form-grid">
+
+
+            <!-- COURSE -->
+
+            <div class="form-group" id="courseField">
+
+                <label id="courseLabel">
+                    Course
+                </label>
+
+                <select id="course">
+
+                    <option value="">
+                        Select
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- YEAR -->
+
+            <div class="form-group" id="yearField">
+
+                <label>
+                    Year
+                </label>
+
+                <select id="academicYear">
+
+                    <option value="">
+                        Select Year
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- SEMESTER -->
+
+            <div class="form-group" id="semesterField">
+
+                <label>
+                    Semester
+                </label>
+
+                <select id="semester">
+
+                    <option value="">
+                        Select Semester
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- BRANCH -->
+
+            <div class="form-group" id="branchField">
+
+                <label id="branchLabel">
+                    Branch / Specialization
+                </label>
+
+                <select id="branch">
+
+                    <option value="">
+                        Select
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- SCHOOL BOARD -->
+
+            <div
+                class="form-group hidden"
+                id="boardField"
+            >
+
+                <label>
+                    Board
+                </label>
+
+                <select id="board">
+
+                    <option value="">
+                        Select Board
+                    </option>
+
+                    <option>
+                        CBSE
+                    </option>
+
+                    <option>
+                        ICSE
+                    </option>
+
+                    <option>
+                        State Board
+                    </option>
+
+                    <option>
+                        Other
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- COLLEGE / SCHOOL -->
+
+            <div class="form-group full">
+
+                <label id="institutionLabel">
+                    College / Institution
+                </label>
+
+                <input
+                    type="text"
+                    id="institution"
+                    placeholder="Enter your institution name"
+                >
+
+            </div>
+
+
+            <!-- COLLEGE TYPE -->
+
+            <div
+                class="form-group hidden"
+                id="collegeTypeField"
+            >
+
+                <label>
+                    College / University Type
+                </label>
+
+                <select
+                    id="collegeType"
+                    onchange="collegeTypeChanged()"
+                >
+
+                    <option value="">
+                        Select Type
+                    </option>
+
+                    <option value="vtu">
+                        VTU
+                    </option>
+
+                    <option value="autonomous">
+                        Autonomous College
+                    </option>
+
+                    <option value="other">
+                        Other University
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- VTU CYCLE -->
+
+            <div
+                class="form-group hidden"
+                id="cycleField"
+            >
+
+                <label>
+                    VTU First-Year Cycle
+                </label>
+
+                <select id="cycle">
+
+                    <option value="">
+                        Select Cycle
+                    </option>
+
+                    <option value="physics">
+                        Physics Cycle
+                    </option>
+
+                    <option value="chemistry">
+                        Chemistry Cycle
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="note hidden"
+            id="cycleNote"
+        >
+            VTU Physics/Chemistry Cycle is applicable only for first-year engineering students.
+        </div>
+
+
+        <button
+            class="continue-btn"
+            id="continueButton"
+            onclick="continueNext()"
+        >
+            Continue →
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+let selectedEducation = "";
+
+
+/* =========================
+   SELECT EDUCATION
+   ========================= */
+
+function selectEducation(card, type) {
+
+    selectedEducation = type;
+
+    document
+        .querySelectorAll(".education-card")
+        .forEach(function(c) {
+
+            c.classList.remove("active");
+
+        });
+
+
+    card.classList.add("active");
+
+    document
+        .getElementById("details")
+        .classList.add("show");
+
+
+    resetFields();
+
+
+    if (type === "school") {
+
+        setupSchool();
+
+    }
+
+    else if (type === "degree") {
+
+        setupDegree();
+
+    }
+
+    else if (type === "engineering") {
+
+        setupEngineering();
+
+    }
+
+    else if (type === "mba") {
+
+        setupMBA();
+
+    }
+
+}
+
+
+/* =========================
+   RESET
+   ========================= */
+
+function resetFields() {
+
+    document.getElementById("course").innerHTML =
+        '<option value="">Select</option>';
+
+
+    document.getElementById("academicYear").innerHTML =
+        '<option value="">Select Year</option>';
+
+
+    document.getElementById("semester").innerHTML =
+        '<option value="">Select Semester</option>';
+
+
+    document.getElementById("branch").innerHTML =
+        '<option value="">Select</option>';
+
+
+    document.getElementById("collegeType").value = "";
+
+    document.getElementById("cycle").value = "";
+
+    document.getElementById("board").value = "";
+
+
+    document
+        .getElementById("cycleField")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("cycleNote")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("collegeTypeField")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("boardField")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("semesterField")
+        .classList.remove("hidden");
+
+
+    document
+        .getElementById("branchField")
+        .classList.remove("hidden");
+
+
+    document.getElementById("institution").value = "";
+
+}
+
+
+/* =========================
+   SCHOOL
+   ========================= */
+
+function setupSchool() {
+
+    document.getElementById("detailsTitle").innerText =
+        "School Details";
+
+
+    document.getElementById("courseLabel").innerText =
+        "Learning Level";
+
+
+    document.getElementById("course").innerHTML = `
+        <option value="school">
+            School
+        </option>
+    `;
+
+
+    addClasses();
+
+
+    document
+        .getElementById("semesterField")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("branchField")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("collegeTypeField")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("boardField")
+        .classList.remove("hidden");
+
+
+    document.getElementById("institutionLabel").innerText =
+        "School Name";
+
+}
+
+
+/* =========================
+   DEGREE
+   ========================= */
+
+function setupDegree() {
+
+    document.getElementById("detailsTitle").innerText =
+        "Degree Details";
+
+
+    document.getElementById("courseLabel").innerText =
+        "Degree";
+
+
+    document.getElementById("course").innerHTML = `
+
+        <option value="">
+            Select Degree
+        </option>
+
+        <option value="BCA">
+            BCA
+        </option>
+
+        <option value="B.Sc">
+            B.Sc
+        </option>
+
+        <option value="B.Com">
+            B.Com
+        </option>
+
+        <option value="BA">
+            BA
+        </option>
+
+        <option value="BBA">
+            BBA
+        </option>
+
+        <option value="Other Degree">
+            Other Degree
+        </option>
+
+    `;
+
+
+    addYears(4);
+
+    addSemesters(8);
+
+
+    addBranches([
+
+        "Computer Applications",
+
+        "Computer Science",
+
+        "Commerce",
+
+        "Business Administration",
+
+        "Arts",
+
+        "Other"
+
+    ]);
+
+
+    document
+        .getElementById("collegeTypeField")
+        .classList.add("hidden");
+
+
+    document.getElementById("institutionLabel").innerText =
+        "College / Institution";
+
+}
+
+
+/* =========================
+   ENGINEERING
+   ========================= */
+
+function setupEngineering() {
+
+    document.getElementById("detailsTitle").innerText =
+        "Engineering Details";
+
+
+    document.getElementById("courseLabel").innerText =
+        "Engineering Program";
+
+
+    document.getElementById("course").innerHTML = `
+
+        <option value="">
+            Select Program
+        </option>
+
+        <option value="B.E">
+            B.E
+        </option>
+
+        <option value="B.Tech">
+            B.Tech
+        </option>
+
+    `;
+
+
+    addYears(4);
+
+    addSemesters(8);
+
+
+    addBranches([
+
+        "Computer Science & Engineering",
+
+        "Information Science & Engineering",
+
+        "Artificial Intelligence & Machine Learning",
+
+        "Electronics & Communication Engineering",
+
+        "Electrical & Electronics Engineering",
+
+        "Mechanical Engineering",
+
+        "Civil Engineering",
+
+        "Other"
+
+    ]);
+
+
+    document
+        .getElementById("collegeTypeField")
+        .classList.remove("hidden");
+
+
+    document.getElementById("institutionLabel").innerText =
+        "Engineering College";
+
+
+    document
+        .getElementById("cycleField")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("cycleNote")
+        .classList.add("hidden");
+
+}
+
+
+/* =========================
+   MBA
+   ========================= */
+
+function setupMBA() {
+
+    document.getElementById("detailsTitle").innerText =
+        "MBA Details";
+
+
+    document.getElementById("courseLabel").innerText =
+        "Program";
+
+
+    document.getElementById("course").innerHTML = `
+
+        <option value="MBA">
+            MBA
+        </option>
+
+    `;
+
+
+    addYears(2);
+
+    addSemesters(4);
+
+
+    addBranches([
+
+        "Finance",
+
+        "Marketing",
+
+        "Human Resources",
+
+        "Business Analytics",
+
+        "Operations",
+
+        "Other"
+
+    ]);
+
+
+    document
+        .getElementById("collegeTypeField")
+        .classList.add("hidden");
+
+
+    document.getElementById("institutionLabel").innerText =
+        "College / Institution";
+
+}
+
+
+/* =========================
+   YEARS
+   ========================= */
+
+function addYears(number) {
+
+    const year =
+        document.getElementById("academicYear");
+
+
+    year.innerHTML =
+        '<option value="">Select Year</option>';
+
+
+    for (let i = 1; i <= number; i++) {
+
+        year.innerHTML +=
+            `<option value="${i}">
+                ${i}${getSuffix(i)} Year
+            </option>`;
+
+    }
+
+
+    year.onchange = function() {
+
+        if (
+            selectedEducation === "engineering" &&
+            document.getElementById("collegeType").value === "vtu" &&
+            this.value === "1"
+        ) {
+
+            document
+                .getElementById("cycleField")
+                .classList.remove("hidden");
+
+
+            document
+                .getElementById("cycleNote")
+                .classList.remove("hidden");
+
+        }
+
+        else {
+
+            document
+                .getElementById("cycleField")
+                .classList.add("hidden");
+
+
+            document
+                .getElementById("cycleNote")
+                .classList.add("hidden");
+
+
+            document.getElementById("cycle").value = "";
+
+        }
+
+    };
+
+}
+
+
+/* =========================
+   COLLEGE TYPE
+   ========================= */
+
+function collegeTypeChanged() {
+
+    const collegeType =
+        document.getElementById("collegeType").value;
+
+
+    const year =
+        document.getElementById("academicYear").value;
+
+
+    if (
+        selectedEducation === "engineering" &&
+        collegeType === "vtu" &&
+        year === "1"
+    ) {
+
+        document
+            .getElementById("cycleField")
+            .classList.remove("hidden");
+
+
+        document
+            .getElementById("cycleNote")
+            .classList.remove("hidden");
+
+    }
+
+    else {
+
+        document
+            .getElementById("cycleField")
+            .classList.add("hidden");
+
+
+        document
+            .getElementById("cycleNote")
+            .classList.add("hidden");
+
+
+        document.getElementById("cycle").value = "";
+
+    }
+
+}
+
+
+/* =========================
+   SEMESTERS
+   ========================= */
+
+function addSemesters(number) {
+
+    const semester =
+        document.getElementById("semester");
+
+
+    semester.innerHTML =
+        '<option value="">Select Semester</option>';
+
+
+    for (let i = 1; i <= number; i++) {
+
+        semester.innerHTML +=
+            `<option value="${i}">
+                Semester ${i}
+            </option>`;
+
+    }
+
+}
+
+
+/* =========================
+   CLASSES
+   ========================= */
+
+function addClasses() {
+
+    const year =
+        document.getElementById("academicYear");
+
+
+    year.innerHTML =
+        '<option value="">Select Class</option>';
+
+
+    for (let i = 1; i <= 12; i++) {
+
+        year.innerHTML +=
+            `<option value="${i}">
+                Class ${i}
+            </option>`;
+
+    }
+
+}
+
+
+/* =========================
+   BRANCHES
+   ========================= */
+
+function addBranches(branches) {
+
+    const branch =
+        document.getElementById("branch");
+
+
+    branch.innerHTML =
+        '<option value="">Select</option>';
+
+
+    branches.forEach(function(item) {
+
+        branch.innerHTML +=
+            `<option value="${item}">
+                ${item}
+            </option>`;
+
+    });
+
+}
+
+
+/* =========================
+   SUFFIX
+   ========================= */
+
+function getSuffix(number) {
+
+    if (number === 1) {
+        return "st";
+    }
+
+    if (number === 2) {
+        return "nd";
+    }
+
+    if (number === 3) {
+        return "rd";
+    }
+
+    return "th";
+
+}
+
+
+/* =========================
+   CONTINUE
+   ========================= */
+
+async function continueNext() {
+
+    const button =
+        document.getElementById("continueButton");
+
+
+    const year =
+        document.getElementById("academicYear").value;
+
+
+    const institution =
+        document.getElementById("institution").value.trim();
+
+
+    const course =
+        document.getElementById("course").value;
+
+
+    const semester =
+        document.getElementById("semester").value;
+
+
+    const branch =
+        document.getElementById("branch").value;
+
+
+    const collegeType =
+        document.getElementById("collegeType").value;
+
+
+    const cycle =
+        document.getElementById("cycle").value;
+
+
+    const board =
+        document.getElementById("board").value;
+
+
+    /* =========================
+       BASIC VALIDATION
+       ========================= */
+
+    if (!selectedEducation) {
+
+        alert(
+            "Please select your education level."
+        );
+
+        return;
+    }
+
+
+    if (!year) {
+
+        alert(
+            "Please select your year/class."
+        );
+
+        return;
+    }
+
+
+    if (!institution) {
+
+        alert(
+            "Please enter your institution name."
+        );
+
+        document
+            .getElementById("institution")
+            .focus();
+
+        return;
+    }
+
+
+    /* =========================
+       ENGINEERING VALIDATION
+       ========================= */
+
+    if (selectedEducation === "engineering") {
+
+        if (!course) {
+
+            alert(
+                "Please select your engineering program."
+            );
+
+            return;
+        }
+
+
+        if (!collegeType) {
+
+            alert(
+                "Please select your college/university type."
+            );
+
+            return;
+        }
+
+
+        /*
+           VTU first year requires cycle
+        */
+
+        if (
+            collegeType === "vtu" &&
+            year === "1"
+        ) {
+
+            if (!cycle) {
+
+                alert(
+                    "Please select your VTU first-year cycle."
+                );
+
+                return;
+            }
+
+        }
+
+    }
+
+
+    /* =========================
+       DISABLE BUTTON
+       ========================= */
+
+    button.disabled = true;
+
+    button.innerText =
+        "Saving profile...";
+
+
+    /* =========================
+       SAVE PROFILE TO FLASK
+       ========================= */
+
+    try {
+
+        const response =
+            await fetch("/save-profile", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    education:
+                        selectedEducation,
+
+                    institution:
+                        institution,
+
+                    course:
+                        course,
+
+                    year:
+                        year,
+
+                    semester:
+                        semester,
+
+                    branch:
+                        branch,
+
+                    college_type:
+                        collegeType,
+
+                    cycle:
+                        cycle,
+
+                    board:
+                        board
+
+                })
+
+            });
+
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "PROFILE RESPONSE:",
+            data
+        );
+
+
+        if (data.success) {
+
+            /*
+               IMPORTANT:
+
+               Flask has now saved:
+               Engineering + NEIT
+               information in the session.
+
+               Dashboard will automatically
+               show NEIT background when
+               is_neit = True.
+            */
+
+            window.location.href =
+                "/dashboard";
+
+        }
+
+        else {
+
+            alert(
+                data.error ||
+                "Unable to save profile."
+            );
+
+
+            button.disabled = false;
+
+            button.innerText =
+                "Continue →";
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "PROFILE SAVE ERROR:",
+            error
+        );
+
+
+        alert(
+            "Unable to connect to EduMind AI. Please try again."
+        );
+
+
+        button.disabled = false;
+
+        button.innerText =
+            "Continue →";
+
+    }
+
+}
+
+/* =========================
+   RESET BUTTON WHEN PAGE
+   IS OPENED AGAIN
+   ========================= */
+
+window.addEventListener("pageshow", function() {
+
+    const button =
+        document.getElementById("continueButton");
+
+    if (button) {
+
+        button.disabled = false;
+
+        button.innerText =
+            "Continue →";
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>
