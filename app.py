@@ -196,12 +196,32 @@ def save_profile():
         # NEIT DETECTION
         # -------------------------------------------------
 
-        institution_lower = institution.lower().strip()
+        # Normalize spaces and capitalization
+        institution_lower = " ".join(
+            institution.lower().split()
+        )
 
+        education_lower = education.lower().strip()
+
+
+        # Detect New Ebenezer Institute of Technology
+        # using both full name and NEIT abbreviation.
 
         is_neit = (
-            education.lower() == "engineering"
-            and "neit" in institution_lower
+            education_lower == "engineering"
+            and (
+                institution_lower ==
+                "new ebenezer institute of technology"
+
+                or
+
+                institution_lower == "neit"
+
+                or
+
+                "new ebenezer institute of technology"
+                in institution_lower
+            )
         )
 
 
@@ -209,6 +229,10 @@ def save_profile():
 
         session.modified = True
 
+
+        # -------------------------------------------------
+        # TERMINAL LOG
+        # -------------------------------------------------
 
         print(
             "PROFILE SAVED:",
