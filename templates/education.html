@@ -127,6 +127,7 @@
         .form-group {
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
         .form-group.full {
@@ -153,6 +154,52 @@
         input:focus,
         select:focus {
             border-color: #2563eb;
+        }
+
+        .institution-wrapper {
+            position: relative;
+        }
+
+        .institution-suggestions {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #d6dbe5;
+            border-top: none;
+            border-radius: 0 0 10px 10px;
+            max-height: 280px;
+            overflow-y: auto;
+            z-index: 100;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+
+        .institution-suggestions.show {
+            display: block;
+        }
+
+        .institution-option {
+            padding: 12px 14px;
+            cursor: pointer;
+            font-size: 14px;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        .institution-option:hover {
+            background: #eff6ff;
+            color: #2563eb;
+        }
+
+        .institution-option.neit-option {
+            font-weight: 600;
+        }
+
+        .no-results {
+            padding: 13px 14px;
+            color: #6b7280;
+            font-size: 13px;
         }
 
         .continue-btn {
@@ -190,6 +237,12 @@
             font-size: 13px;
         }
 
+        .college-help {
+            margin-top: 7px;
+            color: #64748b;
+            font-size: 12px;
+        }
+
         @media (max-width: 800px) {
             .education-options {
                 grid-template-columns: repeat(2, 1fr);
@@ -211,6 +264,10 @@
 
             .container {
                 width: 92%;
+            }
+
+            .navbar {
+                padding: 0 5%;
             }
         }
     </style>
@@ -426,11 +483,28 @@
                     College / Institution
                 </label>
 
-                <input
-                    type="text"
-                    id="institution"
-                    placeholder="Enter your institution name"
+                <div class="institution-wrapper">
+
+                    <input
+                        type="text"
+                        id="institution"
+                        placeholder="Enter your institution name"
+                        autocomplete="off"
+                    >
+
+                    <div
+                        class="institution-suggestions"
+                        id="institutionSuggestions"
+                    ></div>
+
+                </div>
+
+                <div
+                    class="college-help hidden"
+                    id="collegeHelp"
                 >
+                    Search and select your engineering college from the list.
+                </div>
 
             </div>
 
@@ -530,9 +604,68 @@
 let selectedEducation = "";
 
 
-/* =========================
+/* =========================================================
+   BENGALURU ENGINEERING COLLEGES
+   ========================================================= */
+
+const bengaluruEngineeringColleges = [
+
+    "New Ebenezer Institute of Technology",
+
+    "Acharya Institute of Technology",
+
+    "BMS College of Engineering",
+
+    "Bangalore Institute of Technology",
+
+    "BMS Institute of Technology & Management",
+
+    "BNM Institute of Technology",
+
+    "Cambridge Institute of Technology",
+
+    "CMR Institute of Technology",
+
+    "Dayananda Sagar College of Engineering",
+
+    "Dr. Ambedkar Institute of Technology",
+
+    "East Point College of Engineering & Technology",
+
+    "East West Institute of Technology",
+
+    "Global Academy of Technology",
+
+    "HKBK College of Engineering",
+
+    "JSS Academy of Technical Education",
+
+    "K S Institute of Technology",
+
+    "M S Ramaiah Institute of Technology",
+
+    "MVJ College of Engineering",
+
+    "New Horizon College of Engineering",
+
+    "R.V. College of Engineering",
+
+    "Rajarajeswari College of Engineering",
+
+    "RNS Institute of Technology",
+
+    "SJB Institute of Technology",
+
+    "Sir M. Visvesvaraya Institute of Technology",
+
+    "The Oxford College of Engineering"
+
+];
+
+
+/* =========================================================
    SELECT EDUCATION
-   ========================= */
+   ========================================================= */
 
 function selectEducation(card, type) {
 
@@ -584,9 +717,9 @@ function selectEducation(card, type) {
 }
 
 
-/* =========================
+/* =========================================================
    RESET
-   ========================= */
+   ========================================================= */
 
 function resetFields() {
 
@@ -645,12 +778,14 @@ function resetFields() {
 
     document.getElementById("institution").value = "";
 
+    hideInstitutionSuggestions();
+
 }
 
 
-/* =========================
+/* =========================================================
    SCHOOL
-   ========================= */
+   ========================================================= */
 
 function setupSchool() {
 
@@ -695,12 +830,17 @@ function setupSchool() {
     document.getElementById("institutionLabel").innerText =
         "School Name";
 
+
+    document
+        .getElementById("collegeHelp")
+        .classList.add("hidden");
+
 }
 
 
-/* =========================
+/* =========================================================
    DEGREE
-   ========================= */
+   ========================================================= */
 
 function setupDegree() {
 
@@ -775,12 +915,17 @@ function setupDegree() {
     document.getElementById("institutionLabel").innerText =
         "College / Institution";
 
+
+    document
+        .getElementById("collegeHelp")
+        .classList.add("hidden");
+
 }
 
 
-/* =========================
+/* =========================================================
    ENGINEERING
-   ========================= */
+   ========================================================= */
 
 function setupEngineering() {
 
@@ -845,6 +990,11 @@ function setupEngineering() {
 
 
     document
+        .getElementById("collegeHelp")
+        .classList.remove("hidden");
+
+
+    document
         .getElementById("cycleField")
         .classList.add("hidden");
 
@@ -853,12 +1003,205 @@ function setupEngineering() {
         .getElementById("cycleNote")
         .classList.add("hidden");
 
+
+    setupInstitutionSearch();
+
 }
 
 
-/* =========================
+/* =========================================================
+   ENGINEERING COLLEGE SEARCH
+   ========================================================= */
+
+function setupInstitutionSearch() {
+
+    const input =
+        document.getElementById("institution");
+
+    const suggestions =
+        document.getElementById("institutionSuggestions");
+
+
+    input.oninput = function() {
+
+        const searchText =
+            this.value.trim().toLowerCase();
+
+
+        const filtered =
+            bengaluruEngineeringColleges.filter(function(college) {
+
+                return college
+                    .toLowerCase()
+                    .includes(searchText);
+
+            });
+
+
+        showInstitutionSuggestions(filtered);
+
+    };
+
+
+    input.onfocus = function() {
+
+        const searchText =
+            this.value.trim().toLowerCase();
+
+
+        const filtered =
+            bengaluruEngineeringColleges.filter(function(college) {
+
+                return college
+                    .toLowerCase()
+                    .includes(searchText);
+
+            });
+
+
+        showInstitutionSuggestions(filtered);
+
+    };
+
+}
+
+
+/* =========================================================
+   SHOW COLLEGE SUGGESTIONS
+   ========================================================= */
+
+function showInstitutionSuggestions(colleges) {
+
+    const suggestions =
+        document.getElementById("institutionSuggestions");
+
+
+    suggestions.innerHTML = "";
+
+
+    if (colleges.length === 0) {
+
+        suggestions.innerHTML = `
+            <div class="no-results">
+                No college found in the list.
+            </div>
+        `;
+
+        suggestions.classList.add("show");
+
+        return;
+
+    }
+
+
+    colleges.forEach(function(college) {
+
+        const option =
+            document.createElement("div");
+
+
+        option.className =
+            "institution-option";
+
+
+        if (
+            college ===
+            "New Ebenezer Institute of Technology"
+        ) {
+
+            option.classList.add("neit-option");
+
+        }
+
+
+        option.innerText = college;
+
+
+        option.onclick = function() {
+
+            selectInstitution(college);
+
+        };
+
+
+        suggestions.appendChild(option);
+
+    });
+
+
+    suggestions.classList.add("show");
+
+}
+
+
+/* =========================================================
+   SELECT COLLEGE
+   ========================================================= */
+
+function selectInstitution(college) {
+
+    document.getElementById("institution").value =
+        college;
+
+
+    hideInstitutionSuggestions();
+
+
+    /*
+       NEIT is now saved as the exact full
+       institution name.
+
+       Flask will detect it and show
+       the NEIT dashboard background.
+    */
+
+}
+
+
+/* =========================================================
+   HIDE COLLEGE SUGGESTIONS
+   ========================================================= */
+
+function hideInstitutionSuggestions() {
+
+    const suggestions =
+        document.getElementById("institutionSuggestions");
+
+
+    if (suggestions) {
+
+        suggestions.classList.remove("show");
+
+    }
+
+}
+
+
+/* =========================================================
+   CLOSE SEARCH WHEN CLICKING OUTSIDE
+   ========================================================= */
+
+document.addEventListener("click", function(event) {
+
+    const wrapper =
+        document.querySelector(".institution-wrapper");
+
+
+    if (
+        wrapper &&
+        !wrapper.contains(event.target)
+    ) {
+
+        hideInstitutionSuggestions();
+
+    }
+
+});
+
+
+/* =========================================================
    MBA
-   ========================= */
+   ========================================================= */
 
 function setupMBA() {
 
@@ -909,12 +1252,17 @@ function setupMBA() {
     document.getElementById("institutionLabel").innerText =
         "College / Institution";
 
+
+    document
+        .getElementById("collegeHelp")
+        .classList.add("hidden");
+
 }
 
 
-/* =========================
+/* =========================================================
    YEARS
-   ========================= */
+   ========================================================= */
 
 function addYears(number) {
 
@@ -976,9 +1324,9 @@ function addYears(number) {
 }
 
 
-/* =========================
+/* =========================================================
    COLLEGE TYPE
-   ========================= */
+   ========================================================= */
 
 function collegeTypeChanged() {
 
@@ -1026,9 +1374,9 @@ function collegeTypeChanged() {
 }
 
 
-/* =========================
+/* =========================================================
    SEMESTERS
-   ========================= */
+   ========================================================= */
 
 function addSemesters(number) {
 
@@ -1052,9 +1400,9 @@ function addSemesters(number) {
 }
 
 
-/* =========================
+/* =========================================================
    CLASSES
-   ========================= */
+   ========================================================= */
 
 function addClasses() {
 
@@ -1078,9 +1426,9 @@ function addClasses() {
 }
 
 
-/* =========================
+/* =========================================================
    BRANCHES
-   ========================= */
+   ========================================================= */
 
 function addBranches(branches) {
 
@@ -1104,9 +1452,9 @@ function addBranches(branches) {
 }
 
 
-/* =========================
+/* =========================================================
    SUFFIX
-   ========================= */
+   ========================================================= */
 
 function getSuffix(number) {
 
@@ -1127,9 +1475,9 @@ function getSuffix(number) {
 }
 
 
-/* =========================
+/* =========================================================
    CONTINUE
-   ========================= */
+   ========================================================= */
 
 async function continueNext() {
 
@@ -1328,18 +1676,6 @@ async function continueNext() {
 
         if (data.success) {
 
-            /*
-               IMPORTANT:
-
-               Flask has now saved:
-               Engineering + NEIT
-               information in the session.
-
-               Dashboard will automatically
-               show NEIT background when
-               is_neit = True.
-            */
-
             window.location.href =
                 "/dashboard";
 
@@ -1384,10 +1720,10 @@ async function continueNext() {
 
 }
 
-/* =========================
-   RESET BUTTON WHEN PAGE
-   IS OPENED AGAIN
-   ========================= */
+
+/* =========================================================
+   RESET BUTTON WHEN PAGE IS OPENED AGAIN
+   ========================================================= */
 
 window.addEventListener("pageshow", function() {
 
